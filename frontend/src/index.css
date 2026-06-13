@@ -1,0 +1,195 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: hsl(20, 14.3%, 4.1%);
+  --primary: hsl(39, 97%, 58%);
+  --primary-foreground: hsl(26, 83.3%, 14.1%);
+  --secondary: hsl(60, 4.8%, 95.9%);
+  --secondary-foreground: hsl(24, 9.8%, 10%);
+  --muted: hsl(60, 4.8%, 95.9%);
+  --muted-foreground: hsl(25, 5.3%, 44.7%);
+  --destructive: hsl(0, 84.2%, 60.2%);
+  --border: hsl(20, 5.9%, 90%);
+  --input: hsl(20, 5.9%, 90%);
+  --ring: hsl(20, 14.3%, 4.1%);
+  --radius: 0.3rem;
+  --accent: hsl(60, 4.8%, 95.9%);
+  --card: #ffffff;
+  --popover: #ffffff;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Poppins', 'Hind Siliguri', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.font-poppins {
+  font-family: 'Poppins', sans-serif;
+}
+
+.font-hind {
+  font-family: 'Hind Siliguri', sans-serif;
+}
+
+/* Line clamp */
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.line-clamp-3 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
+
+/* Product Badge */
+.productBadge {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  text-transform: uppercase;
+}
+
+/* Shimmer Effect */
+.shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.3s infinite linear;
+}
+
+/* Dashed border pattern */
+.dashed-border {
+  border: 2px dashed;
+  border-image: repeating-linear-gradient(
+    90deg,
+    #F9BA3B 0,
+    #F9BA3B 8px,
+    transparent 8px,
+    transparent 16px
+  ) 2;
+}
+
+/* Underline animation for nav links */
+.underline-animate {
+  position: relative;
+  text-decoration: none;
+}
+.underline-animate::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 50%;
+  background-color: #000;
+  transition: all 0.3s ease;
+}
+.underline-animate:hover::after {
+  width: 100%;
+  left: 0;
+}
+
+/* Nine class - SunnahSquare section title */
+.nine {
+  display: block;
+}
+
+/* Embla Carousel */
+.embla {
+  overflow: hidden;
+}
+.embla__container {
+  display: flex;
+}
+.embla__slide {
+  flex: 0 0 100%;
+  min-width: 0;
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-[#222] text-white px-6 py-2.5 rounded-lg font-medium hover:bg-black transition-all duration-200 shadow-sm hover:shadow-md font-poppins;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-100 text-gray-800 px-6 py-2.5 rounded-lg font-medium hover:bg-gray-200 transition-all duration-200 font-poppins;
+  }
+
+  .btn-gold {
+    @apply bg-primary text-white px-6 py-2.5 rounded-lg font-medium hover:bg-primary-600 transition-all duration-200 shadow-sm hover:shadow-md font-poppins;
+  }
+
+  .btn-danger {
+    @apply bg-red-500 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-red-600 transition-all duration-200 font-poppins;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 text-sm font-poppins;
+  }
+
+  .card {
+    @apply bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200 hover:shadow-md transition-all duration-300;
+  }
+
+  .section-title {
+    @apply text-md md:text-3xl font-poppins font-semibold;
+  }
+
+  .container-pattern {
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 10px,
+      rgba(0, 0, 0, 0.02) 10px,
+      rgba(0, 0, 0, 0.02) 20px
+    );
+  }
+}
