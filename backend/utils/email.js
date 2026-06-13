@@ -1,14 +1,20 @@
 const nodemailer = require("nodemailer");
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS.replace(/\s/g, ""),
-  },
-});
+const transporter = process.env.EMAIL_USER && process.env.EMAIL_PASS
+  ? nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS.replace(/\s/g, ""),
+      },
+    })
+  : null;
 
 const sendOTP = async (email, otp) => {
+  if (!transporter) {
+    console.error("Email not configured - EMAIL_USER or EMAIL_PASS missing");
+    return;
+  }
   const mailOptions = {
     from: process.env.EMAIL_USER,
     to: email,
