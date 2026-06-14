@@ -30,12 +30,8 @@ const getCategory = async (req, res) => {
 // @route   POST /api/categories
 const createCategory = async (req, res) => {
   try {
-    const { name, description } = req.body;
-    const image = req.file
-      ? `/uploads/${req.file.filename}`
-      : req.body.image || "";
-
-    const category = await Category.create({ name, description, image });
+    const { name, description, image } = req.body;
+    const category = await Category.create({ name, description, image: image || "" });
     res.status(201).json(category);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -51,10 +47,7 @@ const updateCategory = async (req, res) => {
     if (category) {
       category.name = req.body.name || category.name;
       category.description = req.body.description || category.description;
-
-      if (req.file) {
-        category.image = `/uploads/${req.file.filename}`;
-      } else if (req.body.image) {
+      if (req.body.image) {
         category.image = req.body.image;
       }
 

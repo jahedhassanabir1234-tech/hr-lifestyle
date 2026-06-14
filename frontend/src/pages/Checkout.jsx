@@ -160,8 +160,13 @@ const Checkout = () => {
                     </div>
                     <p className="text-gray-400 text-xs font-poppins">Pay via bKash mobile payment</p>
                   </div>
-                  <div className="w-10 h-10 rounded-lg bg-[#E2136E] flex items-center justify-center">
-                    <span className="text-white font-bold text-xs font-poppins">bK</span>
+                  <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{background: "linear-gradient(135deg, #E2136E, #C41058)"}}>
+                    <svg viewBox="0 0 40 40" className="w-7 h-7" fill="none">
+                      <path d="M20 4C11.163 4 4 11.163 4 20s7.163 16 16 16 16-7.163 16-16S28.837 4 20 4z" fill="#E2136E"/>
+                      <path d="M14 14h4.5l2 12H14l-2.5-6L14 14z" fill="#fff"/>
+                      <path d="M22 14h4l2.5 6-2.5 6h-4l2-12z" fill="#fff"/>
+                      <circle cx="20" cy="20" r="3" fill="#fff"/>
+                    </svg>
                   </div>
                 </div>
 
@@ -174,6 +179,13 @@ const Checkout = () => {
                       <span className="text-[10px] bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full font-medium">Coming Soon</span>
                     </div>
                     <p className="text-gray-400 text-xs font-poppins">Pay via Nagad mobile payment</p>
+                  </div>
+                  <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{background: "linear-gradient(135deg, #F6921E, #E07A00)"}}>
+                    <svg viewBox="0 0 40 40" className="w-7 h-7" fill="none">
+                      <path d="M20 4C11.163 4 4 11.163 4 20s7.163 16 16 16 16-7.163 16-16S28.837 4 20 4z" fill="#F6921E"/>
+                      <text x="9" y="24" fill="#fff" fontSize="11" fontWeight="bold" fontFamily="Arial">N</text>
+                      <circle cx="27" cy="16" r="3" fill="#fff" opacity="0.8"/>
+                    </svg>
                   </div>
                   <div className="w-10 h-10 rounded-lg bg-[#F6921E] flex items-center justify-center">
                     <span className="text-white font-bold text-xs font-poppins">Ng</span>

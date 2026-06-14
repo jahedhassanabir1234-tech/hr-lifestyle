@@ -3,6 +3,7 @@ import api from "../../services/api";
 import { HiPlus, HiPencil, HiTrash } from "react-icons/hi";
 import toast from "react-hot-toast";
 import { getImageUrl } from "../../utils/getImageUrl";
+import { uploadImageToCloudinary } from "../../utils/uploadImage";
 
 const AdminCategories = () => {
   const [categories, setCategories] = useState([]);
@@ -67,23 +68,25 @@ const AdminCategories = () => {
     setUploading(true);
 
     try {
-      const formData = new FormData();
-      formData.append("name", name);
-      formData.append("description", description || "");
+      let imageUrl = editingCategory?.image || "";
 
       if (imageFile) {
-        formData.append("image", imageFile);
+        toast.loading("Uploading image...", { id: "upload" });
+        imageUrl = await uploadImageToCloudinary(imageFile);
+        toast.dismiss("upload");
       }
 
+      const payload = {
+        name,
+        description: description || "",
+        image: imageUrl,
+      };
+
       if (editingCategory) {
-        await api.put(`/categories/${editingCategory._id}`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        await api.put(`/categories/${editingCategory._id}`, payload);
         toast.success("Category updated!");
       } else {
-        await api.post("/categories", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        await api.post("/categories", payload);
         toast.success("Category created!");
       }
       setShowModal(false);

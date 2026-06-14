@@ -164,30 +164,20 @@ const createProduct = async (req, res) => {
       featured,
       sizes,
       sizeChart,
+      images,
     } = req.body;
 
-    const images = req.files && req.files.length > 0
-      ? req.files.map((file) => `/uploads/${file.filename}`)
-      : req.body.imageUrls
-        ? req.body.imageUrls
-        : [];
+    const productImages = Array.isArray(images) ? images : [];
 
-    let parsedSizes = [];
-    if (sizes) {
-      try { parsedSizes = JSON.parse(sizes); } catch { parsedSizes = []; }
-    }
-
-    let parsedSizeChart = [];
-    if (sizeChart) {
-      try { parsedSizeChart = JSON.parse(sizeChart); } catch { parsedSizeChart = []; }
-    }
+    let parsedSizes = Array.isArray(sizes) ? sizes : [];
+    let parsedSizeChart = Array.isArray(sizeChart) ? sizeChart : [];
 
     const product = await Product.create({
       name,
       description,
       price: Number(price),
       discountPrice: discountPrice ? Number(discountPrice) : 0,
-      images,
+      images: productImages,
       category,
       brand,
       stock: Number(stock),
@@ -229,36 +219,15 @@ const updateProduct = async (req, res) => {
           ? req.body.isActive === "true" || req.body.isActive === true
           : product.isActive;
 
-      if (req.body.sizes) {
-        try { product.sizes = JSON.parse(req.body.sizes); } catch {}
+      if (Array.isArray(req.body.sizes)) {
+        product.sizes = req.body.sizes;
       }
-      if (req.body.sizeChart) {
-        try { product.sizeChart = JSON.parse(req.body.sizeChart); } catch {}
-      }
-
-      if (req.files && req.files.length > 0) {
-        const newImages = req.files.map((file) => `/uploads/${file.filename}`);
-        product.images = [...product.images, ...newImages];
+      if (Array.isArray(req.body.sizeChart)) {
+        product.sizeChart = req.body.sizeChart;
       }
 
-      if (req.body.imageUrls) {
-        const newUrls = Array.isArray(req.body.imageUrls)
-          ? req.body.imageUrls
-          : [req.body.imageUrls];
-        product.images = [...product.images, ...newUrls];
-      }
-
-      if (req.body.removeImages) {
-        let removeList;
-        try {
-          removeList = JSON.parse(req.body.removeImages);
-        } catch {
-          removeList = Array.isArray(req.body.removeImages)
-            ? req.body.removeImages
-            : [req.body.removeImages];
-        }
-        if (!Array.isArray(removeList)) removeList = [removeList];
-        product.images = product.images.filter((img) => !removeList.includes(img));
+      if (Array.isArray(req.body.images)) {
+        product.images = req.body.images;
       }
 
       const updatedProduct = await product.save();

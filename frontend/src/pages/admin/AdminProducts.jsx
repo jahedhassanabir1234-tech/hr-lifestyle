@@ -3,6 +3,7 @@ import api from "../../services/api";
 import { HiPlus, HiPencil, HiTrash, HiEye, HiEyeOff } from "react-icons/hi";
 import toast from "react-hot-toast";
 import { getImageUrl } from "../../utils/getImageUrl";
+import { uploadMultipleToCloudinary } from "../../utils/uploadImage";
 
 const AdminProducts = () => {
   const [products, setProducts] = useState([]);
@@ -118,45 +119,34 @@ const AdminProducts = () => {
     setUploading(true);
 
     try {
-      const formData = new FormData();
-      formData.append("name", name);
-      formData.append("description", description);
-      formData.append("price", price);
-      formData.append("discountPrice", discountPrice || 0);
-      formData.append("category", category);
-      formData.append("brand", brand || "");
-      formData.append("stock", stock);
-      formData.append("featured", featured);
-      formData.append("sizes", JSON.stringify(sizes));
-      formData.append("sizeChart", JSON.stringify(sizeChart));
+      let uploadedImageUrls = [...existingImages];
 
-      if (editingProduct) {
-        const removedImages = editingProduct.images.filter(
-          (img) => !existingImages.includes(img)
-        );
-        if (removedImages.length > 0) {
-          formData.append("removeImages", JSON.stringify(removedImages));
-        }
-        if (existingImages.length === 0 && newImageFiles.length === 0) {
-          editingProduct.images.forEach((img) => {
-            formData.append("removeImages", JSON.stringify(editingProduct.images));
-          });
-        }
+      if (newImageFiles.length > 0) {
+        toast.loading("Uploading images...", { id: "upload" });
+        const newUrls = await uploadMultipleToCloudinary(newImageFiles);
+        uploadedImageUrls = [...uploadedImageUrls, ...newUrls];
+        toast.dismiss("upload");
       }
 
-      newImageFiles.forEach((file) => {
-        formData.append("images", file);
-      });
+      const payload = {
+        name,
+        description,
+        price: Number(price),
+        discountPrice: Number(discountPrice) || 0,
+        category,
+        brand: brand || "",
+        stock: Number(stock),
+        featured,
+        sizes,
+        sizeChart,
+        images: uploadedImageUrls,
+      };
 
       if (editingProduct) {
-        await api.put(`/products/${editingProduct._id}`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        await api.put(`/products/${editingProduct._id}`, payload);
         toast.success("Product updated!");
       } else {
-        await api.post("/products", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        await api.post("/products", payload);
         toast.success("Product created!");
       }
       setShowModal(false);

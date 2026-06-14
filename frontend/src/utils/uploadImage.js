@@ -1,22 +1,31 @@
-import api from "../services/api";
+const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dn5h9ervo/image/upload";
+const UPLOAD_PRESET = "hr-lifestyle";
+
+export const uploadImageToCloudinary = async (file) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", UPLOAD_PRESET);
+  const res = await fetch(CLOUDINARY_URL, { method: "POST", body: formData });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error?.message || "Upload failed");
+  return data.secure_url;
+};
+
+export const uploadMultipleToCloudinary = async (files) => {
+  const urls = [];
+  for (const file of files) {
+    const url = await uploadImageToCloudinary(file);
+    urls.push(url);
+  }
+  return urls;
+};
 
 export const uploadImageToBackend = async (file) => {
-  const formData = new FormData();
-  formData.append("image", file);
-  const { data } = await api.post("/upload/single", formData, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
-  return data;
+  return uploadImageToCloudinary(file);
 };
 
 export const uploadMultipleImages = async (files) => {
-  const formData = new FormData();
-  files.forEach((file) => formData.append("images", file));
-  const { data } = await api.post("/upload/multiple", formData, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
-  return data;
+  return uploadMultipleToCloudinary(files);
 };
 
-// Keep old names as aliases for backward compatibility
 export const uploadImageToFirebase = uploadImageToBackend;
