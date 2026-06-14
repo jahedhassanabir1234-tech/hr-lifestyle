@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
-import { FiShoppingCart, FiStar } from "react-icons/fi";
+import { FiShoppingCart, FiStar, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { BsMessenger } from "react-icons/bs";
 import { FaWhatsapp } from "react-icons/fa";
 import toast from "react-hot-toast";
@@ -104,9 +104,34 @@ const ProductDetail = () => {
                 <FiShoppingCart className="h-16 w-16 text-gray-300" />
               </div>
             )}
+            {product.images && product.images.length > 1 && (
+              <>
+                <button
+                  onClick={() => setSelectedImage((prev) => (prev === 0 ? product.images.length - 1 : prev - 1))}
+                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white w-9 h-9 rounded-full flex items-center justify-center transition"
+                >
+                  <FiChevronLeft size={20} />
+                </button>
+                <button
+                  onClick={() => setSelectedImage((prev) => (prev === product.images.length - 1 ? 0 : prev + 1))}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white w-9 h-9 rounded-full flex items-center justify-center transition"
+                >
+                  <FiChevronRight size={20} />
+                </button>
+                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+                  {product.images.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setSelectedImage(i)}
+                      className={`w-2 h-2 rounded-full transition ${selectedImage === i ? "bg-white" : "bg-white/50"}`}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
           </div>
           {product.images && product.images.length > 1 && (
-            <div className="flex gap-2">
+            <div className="flex gap-2 overflow-x-auto pb-1">
               {product.images.map((img, i) => (
                 <button key={i} onClick={() => setSelectedImage(i)}
                   className={`w-[75px] h-[75px] rounded overflow-hidden border-2 flex-shrink-0 ${selectedImage === i ? "border-primary" : "border-gray-200"}`}>
