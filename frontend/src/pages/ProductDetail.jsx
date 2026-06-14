@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
@@ -7,6 +7,7 @@ import { FiShoppingCart, FiStar } from "react-icons/fi";
 import { BsMessenger } from "react-icons/bs";
 import { FaWhatsapp } from "react-icons/fa";
 import toast from "react-hot-toast";
+import { getImageUrl } from "../utils/getImageUrl";
 
 const ProductDetail = () => {
   const { slug } = useParams();
@@ -21,6 +22,7 @@ const ProductDetail = () => {
 
   const { addToCart } = useCart();
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -37,14 +39,14 @@ const ProductDetail = () => {
   }, [slug]);
 
   const handleAddToCart = () => {
-    if (!user) { toast.error("Please login to add items to cart"); return; }
+    if (!user) { navigate("/register"); return; }
     if (product.sizes?.length > 0 && !selectedSize) { toast.error("Please select a size"); return; }
     addToCart(product._id, quantity);
     toast.success("Added to cart!");
   };
 
   const handleBuyNow = () => {
-    if (!user) { toast.error("Please login to buy"); return; }
+    if (!user) { navigate("/register"); return; }
     if (product.sizes?.length > 0 && !selectedSize) { toast.error("Please select a size"); return; }
     addToCart(product._id, quantity);
     window.location.href = "/checkout";
@@ -96,7 +98,7 @@ const ProductDetail = () => {
         <div className="lg:sticky lg:top-[90px] lg:self-start">
           <div className="relative border border-gray-200 rounded-lg overflow-hidden mb-3">
             {product.images && product.images[selectedImage] ? (
-              <img src={product.images[selectedImage]} alt={product.name} className="w-full h-auto object-cover" />
+              <img src={getImageUrl(product.images[selectedImage])} alt={product.name} className="w-full h-auto object-cover" />
             ) : (
               <div className="w-full aspect-square bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
                 <FiShoppingCart className="h-16 w-16 text-gray-300" />
@@ -108,7 +110,7 @@ const ProductDetail = () => {
               {product.images.map((img, i) => (
                 <button key={i} onClick={() => setSelectedImage(i)}
                   className={`w-[75px] h-[75px] rounded overflow-hidden border-2 flex-shrink-0 ${selectedImage === i ? "border-primary" : "border-gray-200"}`}>
-                  <img src={img} alt="" className="w-full h-full object-cover" />
+                  <img src={getImageUrl(img)} alt="" className="w-full h-full object-cover" />
                 </button>
               ))}
             </div>

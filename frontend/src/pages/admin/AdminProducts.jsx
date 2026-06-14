@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import api from "../../services/api";
 import { HiPlus, HiPencil, HiTrash, HiEye, HiEyeOff } from "react-icons/hi";
 import toast from "react-hot-toast";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 const AdminProducts = () => {
   const [products, setProducts] = useState([]);
@@ -234,7 +235,7 @@ const AdminProducts = () => {
                     <td className="px-4 py-3">
                       {product.images && product.images.length > 0 ? (
                         <img
-                          src={product.images[0]}
+                          src={getImageUrl(product.images[0])}
                           alt={product.name}
                           className="w-12 h-12 object-cover rounded"
                           onError={(e) => { e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' fill='%23ccc' viewBox='0 0 24 24'%3E%3Cpath d='M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z'/%3E%3C/svg%3E"; }}
@@ -527,7 +528,7 @@ const AdminProducts = () => {
                   <div className="flex flex-wrap gap-2 mt-2">
                     {existingImages.map((img, i) => (
                       <div key={i} className="relative group">
-                        <img src={img} alt="" className="w-20 h-20 object-cover rounded border" />
+                        <img src={getImageUrl(img)} alt="" className="w-20 h-20 object-cover rounded border" />
                         <button
                           type="button"
                           onClick={() => removeExistingImage(i)}

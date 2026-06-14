@@ -1,13 +1,15 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { FiShoppingCart } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { useState } from "react";
+import { getImageUrl } from "../utils/getImageUrl";
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [isAdding, setIsAdding] = useState(false);
   const [imgError, setImgError] = useState(false);
 
@@ -15,7 +17,7 @@ const ProductCard = ({ product }) => {
     e.preventDefault();
     e.stopPropagation();
     if (!user) {
-      toast.error("Please login first");
+      navigate("/register");
       return;
     }
     if (product.stock <= 0) {
@@ -31,7 +33,7 @@ const ProductCard = ({ product }) => {
   const getImageSrc = () => {
     if (imgError) return null;
     if (product.images && product.images.length > 0 && product.images[0]) {
-      return product.images[0];
+      return getImageUrl(product.images[0]);
     }
     return null;
   };

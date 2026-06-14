@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import api from "../../services/api";
 import { HiPlus, HiPencil, HiTrash } from "react-icons/hi";
 import toast from "react-hot-toast";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 const AdminCategories = () => {
   const [categories, setCategories] = useState([]);
@@ -46,7 +47,7 @@ const AdminCategories = () => {
       setEditingCategory(category);
       setName(category.name);
       setDescription(category.description || "");
-      setImagePreview(category.image || null);
+      setImagePreview(getImageUrl(category.image) || null);
     } else {
       resetForm();
     }
@@ -136,7 +137,7 @@ const AdminCategories = () => {
               <div className="w-full h-40 bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg mb-4 flex items-center justify-center overflow-hidden">
                 {category.image ? (
                   <img
-                    src={category.image}
+                    src={getImageUrl(category.image)}
                     alt={category.name}
                     className="w-full h-full object-cover"
                     onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}

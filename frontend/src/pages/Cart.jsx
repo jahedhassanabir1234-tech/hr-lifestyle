@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { FiTrash2, FiPlus, FiMinus, FiShoppingBag } from "react-icons/fi";
+import { getImageUrl } from "../utils/getImageUrl";
 
 const Cart = () => {
   const { cart, updateCartItem, removeFromCart, loading } = useCart();
@@ -54,7 +55,7 @@ const Cart = () => {
               className="bg-white p-4 rounded-lg border border-gray-200 flex gap-4"
             >
               <img
-                src={item.product?.images[0] || "/placeholder.jpg"}
+                src={getImageUrl(item.product?.images[0]) || "/placeholder.jpg"}
                 alt={item.product?.name}
                 className="w-24 h-24 object-cover rounded-lg"
               />
