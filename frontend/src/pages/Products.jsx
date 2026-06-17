@@ -3,6 +3,7 @@ import { useSearchParams, Link } from "react-router-dom";
 import api from "../services/api";
 import ProductCard from "../components/ProductCard";
 import { FiSearch, FiFilter, FiX } from "react-icons/fi";
+import { trackSearch } from "../utils/pixel";
 
 const Products = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -71,6 +72,7 @@ const Products = () => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
       fetchProducts(search, category, page, minPrice, maxPrice);
+      if (search && search.length >= 2) trackSearch(search);
     }, 300);
     return () => clearTimeout(debounceRef.current);
   }, [search, category, page, minPrice, maxPrice, fetchProducts]);

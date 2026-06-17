@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../services/api";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { FiMapPin, FiCreditCard, FiCheck, FiShoppingBag, FiLock } from "react-icons/fi";
 import toast from "react-hot-toast";
+import { trackInitiateCheckout, trackPurchase } from "../utils/pixel";
 
 const Checkout = () => {
   const { cart, clearCart } = useCart();
@@ -21,6 +22,12 @@ const Checkout = () => {
   });
   const [paymentMethod, setPaymentMethod] = useState("cod");
   const [phone, setPhone] = useState(user?.phone || "");
+
+  useEffect(() => {
+    if (cart?.items?.length > 0) {
+      trackInitiateCheckout(cart.totalPrice, cart.items);
+    }
+  }, []);
 
   const handleChange = (e) => {
     setShippingAddress({ ...shippingAddress, [e.target.name]: e.target.value });
@@ -39,6 +46,7 @@ const Checkout = () => {
         paymentMethod: "cod",
         phone,
       });
+      trackPurchase(total, cart.items);
       toast.success("Order placed successfully!");
       clearCart();
       navigate("/orders");
@@ -160,13 +168,8 @@ const Checkout = () => {
                     </div>
                     <p className="text-gray-400 text-xs font-poppins">Pay via bKash mobile payment</p>
                   </div>
-                  <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{background: "linear-gradient(135deg, #E2136E, #C41058)"}}>
-                    <svg viewBox="0 0 40 40" className="w-7 h-7" fill="none">
-                      <path d="M20 4C11.163 4 4 11.163 4 20s7.163 16 16 16 16-7.163 16-16S28.837 4 20 4z" fill="#E2136E"/>
-                      <path d="M14 14h4.5l2 12H14l-2.5-6L14 14z" fill="#fff"/>
-                      <path d="M22 14h4l2.5 6-2.5 6h-4l2-12z" fill="#fff"/>
-                      <circle cx="20" cy="20" r="3" fill="#fff"/>
-                    </svg>
+                  <div className="w-11 h-11 rounded-xl flex items-center justify-center bg-white border border-gray-100 overflow-hidden">
+                    <img src="/logos/bkash.png" alt="bKash" className="w-8 h-8 object-contain" />
                   </div>
                 </div>
 
@@ -180,15 +183,8 @@ const Checkout = () => {
                     </div>
                     <p className="text-gray-400 text-xs font-poppins">Pay via Nagad mobile payment</p>
                   </div>
-                  <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{background: "linear-gradient(135deg, #F6921E, #E07A00)"}}>
-                    <svg viewBox="0 0 40 40" className="w-7 h-7" fill="none">
-                      <path d="M20 4C11.163 4 4 11.163 4 20s7.163 16 16 16 16-7.163 16-16S28.837 4 20 4z" fill="#F6921E"/>
-                      <text x="9" y="24" fill="#fff" fontSize="11" fontWeight="bold" fontFamily="Arial">N</text>
-                      <circle cx="27" cy="16" r="3" fill="#fff" opacity="0.8"/>
-                    </svg>
-                  </div>
-                  <div className="w-10 h-10 rounded-lg bg-[#F6921E] flex items-center justify-center">
-                    <span className="text-white font-bold text-xs font-poppins">Ng</span>
+                  <div className="w-11 h-11 rounded-xl flex items-center justify-center bg-white border border-gray-100 overflow-hidden">
+                    <img src="/logos/nagad.png" alt="Nagad" className="w-8 h-8 object-contain" />
                   </div>
                 </div>
               </div>

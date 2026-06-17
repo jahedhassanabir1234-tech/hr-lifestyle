@@ -5,6 +5,7 @@ import { FiShoppingCart } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { useState } from "react";
 import { getImageUrl } from "../utils/getImageUrl";
+import { trackAddToCart } from "../utils/pixel";
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
@@ -26,6 +27,7 @@ const ProductCard = ({ product }) => {
     }
     setIsAdding(true);
     addToCart(product._id);
+    trackAddToCart(product, 1);
     toast.success("Product added to cart");
     setIsAdding(false);
   };

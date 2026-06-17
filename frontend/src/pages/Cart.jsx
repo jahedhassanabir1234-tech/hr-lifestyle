@@ -1,12 +1,25 @@
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { FiTrash2, FiPlus, FiMinus, FiShoppingBag } from "react-icons/fi";
 import { getImageUrl } from "../utils/getImageUrl";
+import { trackEvent } from "../utils/pixel";
 
 const Cart = () => {
   const { cart, updateCartItem, removeFromCart, loading } = useCart();
   const { user } = useAuth();
+
+  useEffect(() => {
+    if (user && cart?.items?.length > 0) {
+      trackEvent("ViewCart", {
+        value: cart.totalPrice,
+        currency: "BDT",
+        num_items: cart.items.length,
+        content_ids: cart.items.map((i) => i.product?._id),
+      });
+    }
+  }, [cart]);
 
   if (!user) {
     return (

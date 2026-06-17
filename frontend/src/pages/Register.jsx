@@ -5,6 +5,7 @@ import { FiUser, FiMail, FiLock, FiPhone, FiEye, FiEyeOff, FiCheckCircle } from 
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 import Logo from "../components/Logo";
+import { trackEvent } from "../utils/pixel";
 
 const Register = () => {
   const [step, setStep] = useState("register"); // register | otp
@@ -94,6 +95,7 @@ const Register = () => {
     try {
       setOtpLoading(true);
       await verifyOTP(userId, otpStr);
+      trackEvent("CompleteRegistration");
       toast.success("Account verified! Welcome!");
       navigate("/");
     } catch (err) {

@@ -1,5 +1,5 @@
 const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dn5h9ervo/image/upload";
-const UPLOAD_PRESET = "hr-lifestyle";
+const UPLOAD_PRESET = "hr-lifestylehr-lifestyle";
 
 export const uploadImageToCloudinary = async (file) => {
   const formData = new FormData();

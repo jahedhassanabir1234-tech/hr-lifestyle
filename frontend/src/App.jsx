@@ -31,68 +31,47 @@ import AdminLayout from "./components/AdminLayout";
 function App() {
   return (
     <ErrorBoundary>
-      <div className="flex flex-col min-h-screen">
-        <Navbar />
-        <main className="flex-grow">
-          <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/products" element={<Products />} />
-          <Route path="/products/:slug" element={<ProductDetail />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/flash-sale" element={<FlashSale />} />
-          <Route path="/bundle-products" element={<BundleProducts />} />
-          <Route path="/top-selling-products" element={<TopSellingProducts />} />
-          <Route path="/special-products" element={<SpecialProducts />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="/terms-and-conditions" element={<Terms />} />
-          <Route path="/return" element={<Return />} />
-          <Route path="/exchange-request" element={<ExchangeRequest />} />
+      <Routes>
+        <Route path="/admin" element={
+          <AdminRoute>
+            <AdminLayout />
+          </AdminRoute>
+        }>
+          <Route index element={<AdminDashboard />} />
+          <Route path="products" element={<AdminProducts />} />
+          <Route path="orders" element={<AdminOrders />} />
+          <Route path="categories" element={<AdminCategories />} />
+        </Route>
 
-          <Route
-            path="/checkout"
-            element={
-              <PrivateRoute>
-                <Checkout />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <PrivateRoute>
-                <Profile />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/orders"
-            element={
-              <PrivateRoute>
-                <Orders />
-              </PrivateRoute>
-            }
-          />
-
-          <Route
-            path="/admin"
-            element={
-              <AdminRoute>
-                <AdminLayout />
-              </AdminRoute>
-            }
-          >
-            <Route index element={<AdminDashboard />} />
-            <Route path="products" element={<AdminProducts />} />
-            <Route path="orders" element={<AdminOrders />} />
-            <Route path="categories" element={<AdminCategories />} />
-          </Route>
-        </Routes>
-      </main>
-      <Footer />
-    </div>
+        <Route path="*" element={
+          <div className="flex flex-col min-h-screen">
+            <Navbar />
+            <main className="flex-grow">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/products" element={<Products />} />
+                <Route path="/products/:slug" element={<ProductDetail />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/flash-sale" element={<FlashSale />} />
+                <Route path="/bundle-products" element={<BundleProducts />} />
+                <Route path="/top-selling-products" element={<TopSellingProducts />} />
+                <Route path="/special-products" element={<SpecialProducts />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/terms-and-conditions" element={<Terms />} />
+                <Route path="/return" element={<Return />} />
+                <Route path="/exchange-request" element={<ExchangeRequest />} />
+                <Route path="/checkout" element={<PrivateRoute><Checkout /></PrivateRoute>} />
+                <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+                <Route path="/orders" element={<PrivateRoute><Orders /></PrivateRoute>} />
+              </Routes>
+            </main>
+            <Footer />
+          </div>
+        } />
+      </Routes>
     </ErrorBoundary>
   );
 }

@@ -27,7 +27,7 @@ const AdminLayout = () => {
     }`;
 
   return (
-    <div className="flex min-h-[calc(100vh-80px)]">
+    <div className="h-screen flex overflow-hidden bg-gray-50">
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
@@ -36,13 +36,13 @@ const AdminLayout = () => {
         />
       )}
 
-      {/* Sidebar */}
+      {/* Sidebar - fixed left */}
       <aside
-        className={`fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white border-r transform transition-transform duration-200 ease-in-out ${
+        className={`fixed lg:relative inset-y-0 left-0 z-50 w-64 bg-white border-r flex-shrink-0 transform transition-transform duration-200 ease-in-out ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
-        <div className="flex items-center justify-between p-4 border-b">
+        <div className="flex items-center justify-between p-4 border-b h-16">
           <h2 className="text-lg font-bold text-gray-800">Admin Panel</h2>
           <button className="lg:hidden" onClick={() => setSidebarOpen(false)}>
             <HiX className="h-6 w-6" />
@@ -72,16 +72,18 @@ const AdminLayout = () => {
         </div>
       </aside>
 
-      {/* Main content */}
-      <div className="flex-1 min-w-0">
+      {/* Right side */}
+      <div className="flex-1 flex flex-col min-w-0 h-screen">
         {/* Mobile header */}
-        <div className="lg:hidden flex items-center gap-3 p-4 border-b bg-white">
+        <div className="lg:hidden flex items-center gap-3 p-4 border-b bg-white h-16 flex-shrink-0">
           <button onClick={() => setSidebarOpen(true)}>
             <HiMenu className="h-6 w-6" />
           </button>
           <h2 className="text-lg font-bold">Admin Panel</h2>
         </div>
-        <div className="p-4 lg:p-8">
+
+        {/* Scrollable content */}
+        <div className="flex-1 overflow-y-auto p-4 lg:p-8">
           <Outlet />
         </div>
       </div>

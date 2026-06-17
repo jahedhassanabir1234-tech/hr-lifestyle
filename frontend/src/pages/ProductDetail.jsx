@@ -8,6 +8,7 @@ import { BsMessenger } from "react-icons/bs";
 import { FaWhatsapp } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { getImageUrl } from "../utils/getImageUrl";
+import { trackViewContent, trackAddToCart } from "../utils/pixel";
 
 const ProductDetail = () => {
   const { slug } = useParams();
@@ -29,6 +30,7 @@ const ProductDetail = () => {
       try {
         const { data } = await api.get(`/products/${slug}`);
         setProduct(data || null);
+        if (data) trackViewContent(data);
       } catch (error) {
         console.error(error);
       } finally {
@@ -42,6 +44,7 @@ const ProductDetail = () => {
     if (!user) { navigate("/register"); return; }
     if (product.sizes?.length > 0 && !selectedSize) { toast.error("Please select a size"); return; }
     addToCart(product._id, quantity);
+    trackAddToCart(product, quantity);
     toast.success("Added to cart!");
   };
 
@@ -49,6 +52,7 @@ const ProductDetail = () => {
     if (!user) { navigate("/register"); return; }
     if (product.sizes?.length > 0 && !selectedSize) { toast.error("Please select a size"); return; }
     addToCart(product._id, quantity);
+    trackAddToCart(product, quantity);
     window.location.href = "/checkout";
   };
 
