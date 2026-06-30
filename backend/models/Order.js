@@ -17,8 +17,19 @@ const orderSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      required: false,
+      default: null,
     },
+    guestName: { type: String, default: "" },
+    guestPhone: { type: String, default: "" },
+    guestAddress: {
+      street: { type: String, default: "" },
+      city: { type: String, default: "" },
+      state: { type: String, default: "" },
+      zipCode: { type: String, default: "" },
+      country: { type: String, default: "Bangladesh" },
+    },
+    couponCode: { type: String, default: "" },
     items: [orderItemSchema],
     shippingAddress: {
       street: { type: String, required: true },
@@ -51,5 +62,8 @@ const orderSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+orderSchema.index({ user: 1, createdAt: -1 });
+orderSchema.index({ status: 1 });
 
 module.exports = mongoose.model("Order", orderSchema);

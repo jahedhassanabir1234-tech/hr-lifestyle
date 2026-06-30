@@ -58,7 +58,7 @@ const Navbar = () => {
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-white">
+    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md">
       {/* Main Navbar */}
       <div className="bg-white md:p-3 p-2 relative z-40 border-b">
         <div className="max-w-[1220px] mx-auto grid items-center grid-cols-3">
@@ -102,14 +102,14 @@ const Navbar = () => {
           <div className="flex items-center justify-end gap-3 text-primary">
             {/* Account */}
             <div className="relative">
-              {user ? (
+              {user && user.role === "admin" && (
                 <>
                   <button
                     onClick={() => setShowDropdown(!showDropdown)}
                     className="md:flex hidden items-center gap-1.5 text-black hover:opacity-80 transition"
                   >
                     <FiUser className="h-[17px] w-[17px]" />
-                    <span className="font-normal text-sm font-poppins">Account</span>
+                    <span className="font-normal text-sm font-poppins">Admin</span>
                     <FiChevronDown className="h-3 w-3" />
                   </button>
                   {showDropdown && (
@@ -118,21 +118,13 @@ const Navbar = () => {
                       <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50">
                         <div className="px-4 py-2 border-b border-gray-100">
                           <p className="text-sm font-semibold text-gray-800 font-poppins truncate">{user.name}</p>
-                          <p className="text-[11px] text-gray-400 font-poppins truncate">{user.email}</p>
                         </div>
                         <Link
-                          to="/profile"
+                          to="/admin"
                           className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 font-poppins"
                           onClick={() => setShowDropdown(false)}
                         >
-                          <FiUser className="h-4 w-4" /> My Profile
-                        </Link>
-                        <Link
-                          to="/orders"
-                          className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 font-poppins"
-                          onClick={() => setShowDropdown(false)}
-                        >
-                          <FiPackage className="h-4 w-4" /> My Orders
+                          <FiPackage className="h-4 w-4" /> Admin Panel
                         </Link>
                         <div className="border-t border-gray-100 my-1"></div>
                         <button
@@ -145,27 +137,6 @@ const Navbar = () => {
                     </>
                   )}
                 </>
-              ) : (
-                <Link
-                  to="/login"
-                  className="md:block hidden"
-                >
-                  <div className="flex items-center gap-1.5 text-md text-black">
-                    <FiUser className="h-[17px] w-[17px]" />
-                    <span className="md:block font-normal hidden text-sm">Login</span>
-                  </div>
-                </Link>
-              )}
-
-              {/* Mobile Account Icon */}
-              {user ? (
-                <Link to="/profile" className="md:hidden block">
-                  <FiUser className="h-[17px] w-[17px]" />
-                </Link>
-              ) : (
-                <Link to="/login" className="md:hidden block">
-                  <FiUser className="h-[17px] w-[17px]" />
-                </Link>
               )}
             </div>
 
@@ -234,8 +205,7 @@ const Navbar = () => {
       </div>
 
       {/* Mobile Menu */}
-      {mobileMenu && (
-        <div className="lg:hidden bg-white border-b shadow-lg">
+      <div className={`lg:hidden bg-white border-b shadow-lg transition-all duration-300 ${mobileMenu ? 'block' : 'hidden'}`}>
           <div className="px-4 py-4 space-y-2">
             {/* Mobile Nav Links */}
             {navLinks.map((link, index) => (
@@ -268,31 +238,18 @@ const Navbar = () => {
               </Link>
             ))}
             <hr className="my-2" />
-            {user ? (
-              <>
-                <Link to="/profile" className="block px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg font-medium font-poppins" onClick={() => setMobileMenu(false)}>
-                  My Profile
-                </Link>
-                <Link to="/orders" className="block px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg font-medium font-poppins" onClick={() => setMobileMenu(false)}>
-                  My Orders
-                </Link>
-                {user.role === "admin" && (
-                  <Link to="/admin" className="block px-4 py-3 text-primary hover:bg-gray-50 rounded-lg font-medium font-poppins" onClick={() => setMobileMenu(false)}>
-                    Admin Panel
-                  </Link>
-                )}
-                <button onClick={handleLogout} className="w-full text-left px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg font-medium font-poppins">
-                  Logout
-                </button>
-              </>
-            ) : (
-              <Link to="/login" className="block px-4 py-3 text-primary hover:bg-gray-50 rounded-lg font-medium font-poppins" onClick={() => setMobileMenu(false)}>
-                Login / Register
+            {user && user.role === "admin" && (
+              <Link to="/admin" className="block px-4 py-3 text-primary hover:bg-gray-50 rounded-lg font-medium font-poppins" onClick={() => setMobileMenu(false)}>
+                Admin Panel
               </Link>
+            )}
+            {user && (
+              <button onClick={handleLogout} className="w-full text-left px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg font-medium font-poppins">
+                Logout
+              </button>
             )}
           </div>
         </div>
-      )}
     </header>
   );
 };

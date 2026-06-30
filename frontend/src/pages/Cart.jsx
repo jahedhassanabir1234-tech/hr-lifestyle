@@ -11,7 +11,7 @@ const Cart = () => {
   const { user } = useAuth();
 
   useEffect(() => {
-    if (user && cart?.items?.length > 0) {
+    if (cart?.items?.length > 0) {
       trackEvent("ViewCart", {
         value: cart.totalPrice,
         currency: "BDT",
@@ -20,19 +20,6 @@ const Cart = () => {
       });
     }
   }, [cart]);
-
-  if (!user) {
-    return (
-      <div className="container mx-auto px-4 py-20 text-center">
-        <FiShoppingBag className="h-16 w-16 mx-auto text-gray-300 mb-4" />
-        <h2 className="text-2xl font-bold mb-4 font-poppins">Your cart is empty</h2>
-        <p className="text-gray-500 mb-6 font-poppins">Please login to view your cart</p>
-        <Link to="/login" className="btn-primary font-poppins">
-          Login
-        </Link>
-      </div>
-    );
-  }
 
   if (loading) {
     return (

@@ -16,4 +16,15 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ["react", "react-dom", "react-router-dom"],
+          ui: ["react-icons", "react-hot-toast"],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1000,
+  },
 });

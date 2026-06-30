@@ -13,6 +13,9 @@ const Checkout = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
+  const [guestName, setGuestName] = useState(user?.name || "");
+  const [phone, setPhone] = useState(user?.phone || "");
+  const [couponCode, setCouponCode] = useState("");
   const [shippingAddress, setShippingAddress] = useState({
     street: user?.address?.street || "",
     city: user?.address?.city || "",
@@ -20,8 +23,6 @@ const Checkout = () => {
     zipCode: user?.address?.zipCode || "",
     country: user?.address?.country || "Bangladesh",
   });
-  const [paymentMethod, setPaymentMethod] = useState("cod");
-  const [phone, setPhone] = useState(user?.phone || "");
 
   useEffect(() => {
     if (cart?.items?.length > 0) {
@@ -39,17 +40,50 @@ const Checkout = () => {
       toast.error("Cart is empty");
       return;
     }
+    if (!guestName.trim()) {
+      toast.error("Please enter your name");
+      return;
+    }
+    if (!phone.trim()) {
+      toast.error("Please enter your phone number");
+      return;
+    }
+    if (!shippingAddress.street || !shippingAddress.city || !shippingAddress.state) {
+      toast.error("Please fill in your full address");
+      return;
+    }
     try {
       setLoading(true);
-      await api.post("/orders", {
-        shippingAddress,
-        paymentMethod: "cod",
-        phone,
-      });
+
+      if (user) {
+        await api.post("/orders", {
+          shippingAddress,
+          paymentMethod: "cod",
+          phone,
+        });
+      } else {
+        const orderItems = cart.items.map((item) => ({
+          product: item.product?._id,
+          name: item.product?.name,
+          image: item.product?.images?.[0] || "",
+          price: item.product?.discountPrice || item.product?.price,
+          quantity: item.quantity,
+        }));
+
+        await api.post("/orders/guest", {
+          guestName,
+          guestPhone: phone,
+          shippingAddress,
+          paymentMethod: "cod",
+          couponCode,
+          items: orderItems,
+        });
+      }
+
       trackPurchase(total, cart.items);
       toast.success("Order placed successfully!");
       clearCart();
-      navigate("/orders");
+      navigate("/");
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to place order");
     } finally {
@@ -89,14 +123,10 @@ const Checkout = () => {
                   <h2 className="text-base font-bold text-gray-800 font-poppins">Contact Information</h2>
                 </div>
                 <div className="space-y-3">
-                  <div>
-                    <label className="block text-xs font-medium text-gray-500 mb-1 font-poppins">Full Name</label>
-                    <input type="text" value={user?.name || ""} disabled className="w-full px-4 py-2.5 rounded-lg bg-gray-50 border border-gray-200 text-sm text-gray-600 font-poppins" />
-                  </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs font-medium text-gray-500 mb-1 font-poppins">Email</label>
-                      <input type="email" value={user?.email || ""} disabled className="w-full px-4 py-2.5 rounded-lg bg-gray-50 border border-gray-200 text-sm text-gray-600 font-poppins" />
+                      <label className="block text-xs font-medium text-gray-500 mb-1 font-poppins">Full Name *</label>
+                      <input type="text" value={guestName} onChange={(e) => setGuestName(e.target.value)} placeholder="Your full name" className="w-full px-4 py-2.5 rounded-lg bg-white border border-gray-200 text-sm focus:outline-none focus:border-[#E8572A] focus:ring-1 focus:ring-[#E8572A] font-poppins" required />
                     </div>
                     <div>
                       <label className="block text-xs font-medium text-gray-500 mb-1 font-poppins">Phone *</label>
@@ -116,8 +146,8 @@ const Checkout = () => {
                 </div>
                 <div className="space-y-3">
                   <div>
-                    <label className="block text-xs font-medium text-gray-500 mb-1 font-poppins">Street Address *</label>
-                    <input type="text" name="street" value={shippingAddress.street} onChange={handleChange} placeholder="House #, Road #, Area" className="w-full px-4 py-2.5 rounded-lg bg-white border border-gray-200 text-sm focus:outline-none focus:border-[#E8572A] focus:ring-1 focus:ring-[#E8572A] font-poppins" required />
+                    <label className="block text-xs font-medium text-gray-500 mb-1 font-poppins">Full Address *</label>
+                    <input type="text" name="street" value={shippingAddress.street} onChange={handleChange} placeholder="House #, Road #, Area, Thana" className="w-full px-4 py-2.5 rounded-lg bg-white border border-gray-200 text-sm focus:outline-none focus:border-[#E8572A] focus:ring-1 focus:ring-[#E8572A] font-poppins" required />
                   </div>
                   <div className="grid grid-cols-3 gap-3">
                     <div>
@@ -134,6 +164,21 @@ const Checkout = () => {
                     </div>
                   </div>
                 </div>
+              </div>
+
+              {/* Coupon Code */}
+              <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-7 h-7 bg-[#E8572A] rounded-full flex items-center justify-center text-white text-xs font-bold">2</div>
+                  <h2 className="text-base font-bold text-gray-800 font-poppins">Coupon Code (optional)</h2>
+                </div>
+                <input
+                  type="text"
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value)}
+                  placeholder="Enter coupon code if you have one"
+                  className="w-full px-4 py-2.5 rounded-lg bg-white border border-gray-200 text-sm focus:outline-none focus:border-[#E8572A] focus:ring-1 focus:ring-[#E8572A] font-poppins"
+                />
               </div>
 
               {/* Payment Method */}
@@ -157,36 +202,6 @@ const Checkout = () => {
                   </div>
                   <FiShoppingBag className="text-[#E8572A]" size={20} />
                 </label>
-
-                {/* bKash Option (disabled) */}
-                <div className="flex items-center gap-4 p-4 border border-gray-200 rounded-xl bg-gray-50 mb-3 opacity-60">
-                  <div className="w-5 h-5 rounded-full border-2 border-gray-300" />
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold text-gray-600 text-sm font-poppins">bKash</span>
-                      <span className="text-[10px] bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full font-medium">Coming Soon</span>
-                    </div>
-                    <p className="text-gray-400 text-xs font-poppins">Pay via bKash mobile payment</p>
-                  </div>
-                  <div className="w-11 h-11 rounded-xl flex items-center justify-center bg-white border border-gray-100 overflow-hidden">
-                    <img src="/logos/bkash.png" alt="bKash" className="w-8 h-8 object-contain" />
-                  </div>
-                </div>
-
-                {/* Nagad Option (disabled) */}
-                <div className="flex items-center gap-4 p-4 border border-gray-200 rounded-xl bg-gray-50 opacity-60">
-                  <div className="w-5 h-5 rounded-full border-2 border-gray-300" />
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-semibold text-gray-600 text-sm font-poppins">Nagad</span>
-                      <span className="text-[10px] bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full font-medium">Coming Soon</span>
-                    </div>
-                    <p className="text-gray-400 text-xs font-poppins">Pay via Nagad mobile payment</p>
-                  </div>
-                  <div className="w-11 h-11 rounded-xl flex items-center justify-center bg-white border border-gray-100 overflow-hidden">
-                    <img src="/logos/nagad.png" alt="Nagad" className="w-8 h-8 object-contain" />
-                  </div>
-                </div>
               </div>
             </div>
 

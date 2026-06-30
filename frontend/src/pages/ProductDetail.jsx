@@ -9,6 +9,7 @@ import { FaWhatsapp } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { getImageUrl } from "../utils/getImageUrl";
 import { trackViewContent, trackAddToCart } from "../utils/pixel";
+import GuestOrderModal from "../components/GuestOrderModal";
 
 const ProductDetail = () => {
   const { slug } = useParams();
@@ -20,6 +21,8 @@ const ProductDetail = () => {
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [showGuestModal, setShowGuestModal] = useState(false);
+  const [buyNowMode, setBuyNowMode] = useState(false);
 
   const { addToCart } = useCart();
   const { user } = useAuth();
@@ -41,7 +44,6 @@ const ProductDetail = () => {
   }, [slug]);
 
   const handleAddToCart = () => {
-    if (!user) { navigate("/register"); return; }
     if (product.sizes?.length > 0 && !selectedSize) { toast.error("Please select a size"); return; }
     addToCart(product._id, quantity);
     trackAddToCart(product, quantity);
@@ -49,11 +51,9 @@ const ProductDetail = () => {
   };
 
   const handleBuyNow = () => {
-    if (!user) { navigate("/register"); return; }
     if (product.sizes?.length > 0 && !selectedSize) { toast.error("Please select a size"); return; }
-    addToCart(product._id, quantity);
-    trackAddToCart(product, quantity);
-    window.location.href = "/checkout";
+    setBuyNowMode(true);
+    setShowGuestModal(true);
   };
 
   const handleReview = async (e) => {
@@ -334,6 +334,17 @@ const ProductDetail = () => {
           </div>
         )}
       </div>
+
+      <GuestOrderModal
+        isOpen={showGuestModal}
+        onClose={() => {
+          setShowGuestModal(false);
+          setBuyNowMode(false);
+        }}
+        product={product}
+        quantity={buyNowMode ? quantity : 1}
+        selectedSize={selectedSize}
+      />
     </div>
   );
 };

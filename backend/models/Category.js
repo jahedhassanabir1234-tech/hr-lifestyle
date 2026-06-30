@@ -32,4 +32,6 @@ categorySchema.pre("save", function (next) {
   next();
 });
 
+categorySchema.index({ name: 1 });
+
 module.exports = mongoose.model("Category", categorySchema);

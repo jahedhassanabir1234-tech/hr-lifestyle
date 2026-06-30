@@ -56,6 +56,32 @@ const ScrollToTopButton = () => {
   );
 };
 
+const ProductSkeleton = () => (
+  <div className="bg-white border border-gray-100 rounded-lg overflow-hidden animate-pulse">
+    <div className="w-full aspect-[3/4] bg-gray-200" />
+    <div className="p-3">
+      <div className="h-4 bg-gray-200 rounded w-3/4 mx-auto mb-2" />
+      <div className="h-4 bg-gray-200 rounded w-1/2 mx-auto mb-3" />
+      <div className="h-9 bg-gray-200 rounded-lg" />
+    </div>
+  </div>
+);
+
+const CategorySectionSkeleton = () => (
+  <section className="mb-12">
+    <div className="flex flex-col items-center justify-center my-8">
+      <div className="h-7 bg-gray-200 rounded w-40 mb-2 animate-pulse" />
+      <div className="h-4 bg-gray-200 rounded w-16 mt-1 animate-pulse" />
+      <div className="w-16 h-0.5 bg-gray-200 mt-3 animate-pulse" />
+    </div>
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 md:gap-3">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <ProductSkeleton key={i} />
+      ))}
+    </div>
+  </section>
+);
+
 const Home = () => {
   const [categories, setCategories] = useState([]);
   const [categoryProducts, setCategoryProducts] = useState({});
@@ -116,70 +142,19 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const results = await Promise.allSettled([
-          api.get("/categories"),
-          api.get("/products/flash-sale"),
-        ]);
-
-        const safeArray = (result) => {
-          if (result.status !== "fulfilled") return [];
-          const d = result.value.data;
-          if (Array.isArray(d)) return d;
-          if (d && Array.isArray(d.products)) return d.products;
-          if (d && Array.isArray(d.data)) return d.data;
-          return [];
-        };
-
-        const cats = safeArray(results[0]);
-        setCategories(cats);
-        setFlashSaleProducts(safeArray(results[1]));
+        const { data } = await api.get("/home");
+        setCategories(data.categories || []);
+        setCategoryProducts(data.categoryProducts || {});
+        setFlashSaleProducts(data.flashSaleProducts || []);
       } catch (error) {
         console.error(error);
       } finally {
         setLoading(false);
+        setCatLoading(false);
       }
     };
     fetchData();
   }, []);
-
-  useEffect(() => {
-    if (categories.length === 0) return;
-
-    const fetchCategoryProducts = async () => {
-      setCatLoading(true);
-      try {
-        const results = await Promise.allSettled(
-          categories.map((cat) =>
-            api.get(`/products?category=${cat._id}&page=1`).then((res) => ({
-              categoryId: cat._id,
-              categoryName: cat.name,
-              products: Array.isArray(res.data)
-                ? res.data.slice(0, 6)
-                : res.data.products
-                ? res.data.products.slice(0, 6)
-                : [],
-            }))
-          )
-        );
-
-        const productsByCategory = {};
-        results.forEach((result) => {
-          if (result.status === "fulfilled") {
-            const { categoryId, categoryName, products } = result.value;
-            if (products.length > 0) {
-              productsByCategory[categoryId] = { name: categoryName, products };
-            }
-          }
-        });
-        setCategoryProducts(productsByCategory);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setCatLoading(false);
-      }
-    };
-    fetchCategoryProducts();
-  }, [categories]);
 
   return (
     <div className="bg-white">
@@ -202,6 +177,8 @@ const Home = () => {
                     src={slide.image}
                     alt={`Banner ${index + 1}`}
                     className="w-full h-full object-cover"
+                    loading={index === 0 ? "eager" : "lazy"}
+                    decoding="async"
                   />
                 </div>
               ))}
@@ -237,8 +214,21 @@ const Home = () => {
         </div>
       </motion.section>
 
-      {/* Top Categories - sunnahsquare style */}
-      {categories.length > 0 && (
+      {/* Top Categories */}
+      {loading ? (
+        <div className="w-full max-w-[1400px] mx-auto px-4 md:px-6 my-8">
+          <div className="flex items-center justify-center w-full my-6">
+            <div className="flex-grow h-px bg-gray-200"></div>
+            <div className="h-6 bg-gray-200 rounded w-32 mx-4 animate-pulse" />
+            <div className="flex-grow h-px bg-gray-200"></div>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-2 sm:gap-3 md:gap-4">
+            {Array.from({ length: 7 }).map((_, i) => (
+              <div key={i} className="aspect-[3/4] bg-gray-200 rounded-lg animate-pulse" />
+            ))}
+          </div>
+        </div>
+      ) : categories.length > 0 && (
         <div className="w-full max-w-[1400px] mx-auto px-4 md:px-6 my-8">
           <div className="flex items-center justify-center w-full my-6">
             <div className="flex-grow h-px bg-gray-300"></div>
@@ -254,14 +244,19 @@ const Home = () => {
       )}
 
       {/* Category-wise Product Sections */}
-      {!catLoading && Object.keys(categoryProducts).length > 0 && (
+      {catLoading ? (
+        <div className="w-full max-w-[1400px] mx-auto px-4 md:px-6">
+          {Array.from({ length: 2 }).map((_, i) => (
+            <CategorySectionSkeleton key={i} />
+          ))}
+        </div>
+      ) : Object.keys(categoryProducts).length > 0 && (
         <div className="w-full max-w-[1400px] mx-auto px-4 md:px-6">
           {categories.map((category) => {
             const catData = categoryProducts[category._id];
             if (!catData) return null;
             return (
               <section key={category._id} className="mb-12">
-                {/* Category Title */}
                 <div className="flex flex-col items-center justify-center my-8">
                   <h2 className="text-xl md:text-3xl font-poppins font-light text-gray-800 uppercase tracking-wide">
                     {catData.name}
@@ -274,8 +269,6 @@ const Home = () => {
                   </Link>
                   <div className="w-16 h-0.5 bg-emerald-500 mt-3"></div>
                 </div>
-
-                {/* Products Grid */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 md:gap-3">
                   {catData.products.map((product) => (
                     <div key={product._id} className="flex flex-col h-full">
@@ -353,13 +346,13 @@ const TopCategoryCard = ({ category }) => {
           alt={category.name}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
           onError={() => setImgError(true)}
+          loading="lazy"
+          decoding="async"
         />
       )}
 
-      {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
 
-      {/* Content */}
       <div className="absolute inset-0 z-20 flex flex-col items-center justify-end pb-5 px-3">
         <h3 className="text-white text-sm md:text-base font-bold font-poppins text-center mb-2 drop-shadow-lg leading-tight">
           {category.name}

@@ -96,6 +96,13 @@ const productSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+productSchema.index({ isActive: 1, createdAt: -1 });
+productSchema.index({ category: 1, isActive: 1 });
+productSchema.index({ featured: 1, isActive: 1 });
+productSchema.index({ slug: 1 });
+productSchema.index({ name: "text", description: "text", brand: "text" });
+productSchema.index({ price: 1 });
+
 productSchema.pre("save", function (next) {
   if (!this.slug) {
     this.slug = this.name.toLowerCase().replace(/ /g, "-");

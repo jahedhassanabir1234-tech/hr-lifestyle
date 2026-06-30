@@ -59,7 +59,7 @@ const getMyOrders = async (req, res) => {
   try {
     const orders = await Order.find({ user: req.user._id }).sort({
       createdAt: -1,
-    });
+    }).lean();
     res.json(orders);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -122,7 +122,8 @@ const getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find({})
       .populate("user", "name email phone")
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .lean();
     res.json(orders);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -152,8 +153,65 @@ const getStats = async (req, res) => {
   }
 };
 
+// @desc    Create guest order (no auth required)
+// @route   POST /api/orders/guest
+const createGuestOrder = async (req, res) => {
+  try {
+    const { items: orderItems, shippingAddress, paymentMethod, guestName, guestPhone, couponCode } = req.body;
+
+    if (!orderItems || orderItems.length === 0) {
+      return res.status(400).json({ message: "No order items provided" });
+    }
+
+    if (!guestName || !guestPhone) {
+      return res.status(400).json({ message: "Name and phone are required" });
+    }
+
+    if (!shippingAddress || !shippingAddress.street || !shippingAddress.city || !shippingAddress.state) {
+      return res.status(400).json({ message: "Full address is required" });
+    }
+
+    const items = orderItems.map((item) => ({
+      product: item.product,
+      name: item.name,
+      image: item.image || "",
+      price: item.price,
+      quantity: item.quantity,
+    }));
+
+    const itemsPrice = items.reduce(
+      (acc, item) => acc + item.price * item.quantity,
+      0
+    );
+    const shippingPrice = itemsPrice > 1000 ? 0 : 60;
+    const taxPrice = Number((itemsPrice * 0.05).toFixed(2));
+    const totalPrice = Number(
+      (itemsPrice + shippingPrice + taxPrice).toFixed(2)
+    );
+
+    const order = await Order.create({
+      guestName,
+      guestPhone,
+      guestAddress: shippingAddress,
+      couponCode: couponCode || "",
+      items,
+      shippingAddress,
+      paymentMethod: paymentMethod || "cod",
+      itemsPrice,
+      shippingPrice,
+      taxPrice,
+      totalPrice,
+    });
+
+    res.status(201).json(order);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   createOrder,
+  createGuestOrder,
   getMyOrders,
   getOrderById,
   updateOrderStatus,

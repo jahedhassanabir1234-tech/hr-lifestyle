@@ -30,10 +30,12 @@ const getProducts = async (req, res) => {
 
     const count = await Product.countDocuments(query);
     const products = await Product.find(query)
+      .select("name slug price discountPrice images rating numReviews stock category brand")
       .populate("category", "name slug")
       .limit(pageSize)
       .skip(pageSize * (page - 1))
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .lean();
 
     res.json({
       products,
@@ -51,8 +53,10 @@ const getProducts = async (req, res) => {
 const getAdminProducts = async (req, res) => {
   try {
     const products = await Product.find({})
+      .select("name slug price discountPrice images rating numReviews stock category brand isActive featured sizes sizeChart")
       .populate("category", "name slug")
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .lean();
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -80,9 +84,11 @@ const toggleProductActive = async (req, res) => {
 const getFeaturedProducts = async (req, res) => {
   try {
     const products = await Product.find({ featured: true, isActive: true })
+      .select("name slug price discountPrice images rating numReviews category")
       .populate("category", "name slug")
       .limit(8)
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .lean();
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -94,9 +100,11 @@ const getFeaturedProducts = async (req, res) => {
 const getTopSellingProducts = async (req, res) => {
   try {
     const products = await Product.find({ isActive: true })
+      .select("name slug price discountPrice images rating numReviews category")
       .populate("category", "name slug")
       .limit(6)
-      .sort({ numReviews: -1, rating: -1 });
+      .sort({ numReviews: -1, rating: -1 })
+      .lean();
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -108,9 +116,11 @@ const getTopSellingProducts = async (req, res) => {
 const getFlashSaleProducts = async (req, res) => {
   try {
     const products = await Product.find({ featured: true, isActive: true })
+      .select("name slug price discountPrice images rating numReviews category")
       .populate("category", "name slug")
       .limit(10)
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .lean();
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -122,9 +132,11 @@ const getFlashSaleProducts = async (req, res) => {
 const getSpecialProducts = async (req, res) => {
   try {
     const products = await Product.find({ featured: true, isActive: true })
+      .select("name slug price discountPrice images rating numReviews category")
       .populate("category", "name slug")
       .limit(6)
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .lean();
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: error.message });
