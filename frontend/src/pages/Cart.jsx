@@ -1,14 +1,20 @@
-import { Link } from "react-router-dom";
-import { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
-import { FiTrash2, FiPlus, FiMinus, FiShoppingBag } from "react-icons/fi";
+import { FiTrash2, FiPlus, FiMinus, FiShoppingBag, FiPackage, FiSearch } from "react-icons/fi";
 import { getImageUrl } from "../utils/getImageUrl";
 import { trackEvent } from "../utils/pixel";
+import api from "../services/api";
 
 const Cart = () => {
   const { cart, updateCartItem, removeFromCart, loading } = useCart();
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const [trackPhone, setTrackPhone] = useState("");
+  const [trackOrders, setTrackOrders] = useState([]);
+  const [trackLoading, setTrackLoading] = useState(false);
+  const [trackSearched, setTrackSearched] = useState(false);
 
   useEffect(() => {
     if (cart?.items?.length > 0) {
@@ -20,6 +26,21 @@ const Cart = () => {
       });
     }
   }, [cart]);
+
+  const handleTrack = async (e) => {
+    e.preventDefault();
+    if (!trackPhone.trim()) return;
+    setTrackLoading(true);
+    setTrackSearched(true);
+    try {
+      const { data } = await api.get(`/orders/track/${trackPhone.trim()}`);
+      setTrackOrders(data);
+    } catch {
+      setTrackOrders([]);
+    } finally {
+      setTrackLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -130,6 +151,63 @@ const Cart = () => {
           >
             Continue Shopping
           </Link>
+        </div>
+      </div>
+
+      {/* Order Tracking Section */}
+      <div className="mt-12 bg-white p-6 rounded-lg border border-gray-200">
+        <div className="flex items-center gap-2 mb-4">
+          <FiPackage className="h-5 w-5 text-[#E8572A]" />
+          <h2 className="text-lg font-bold font-poppins">Track Your Order</h2>
+        </div>
+        <form onSubmit={handleTrack} className="flex gap-2 mb-4">
+          <div className="relative flex-1">
+            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <input
+              type="tel"
+              value={trackPhone}
+              onChange={(e) => setTrackPhone(e.target.value)}
+              placeholder="Enter your phone number"
+              className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-[#E8572A] focus:ring-1 focus:ring-[#E8572A] font-poppins"
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={trackLoading}
+            className="bg-[#E8572A] hover:bg-[#D14E25] text-white font-bold px-5 py-2.5 rounded-lg transition text-sm font-poppins disabled:opacity-50"
+          >
+            {trackLoading ? "..." : "Track"}
+          </button>
+        </form>
+
+        {trackSearched && !trackLoading && trackOrders.length === 0 && (
+          <p className="text-gray-400 text-sm font-poppins text-center py-4">No orders found for this number</p>
+        )}
+
+        <div className="space-y-3">
+          {trackOrders.map((order) => (
+            <div key={order._id} className="bg-gray-50 rounded-lg p-3 flex items-center justify-between">
+              <div>
+                <p className="text-xs text-gray-400 font-poppins">#{order._id.slice(-8).toUpperCase()}</p>
+                <p className="text-sm font-medium text-gray-800 font-poppins">
+                  {order.items?.map((it) => it.name).join(", ")}
+                </p>
+                <p className="text-xs text-gray-400 font-poppins">
+                  {new Date(order.createdAt).toLocaleDateString("en-BD", { month: "short", day: "numeric" })}
+                </p>
+              </div>
+              <span className={`text-xs font-bold px-3 py-1 rounded-full capitalize font-poppins ${
+                order.status === "delivered" ? "bg-green-100 text-green-700" :
+                order.status === "cancelled" ? "bg-red-100 text-red-700" :
+                order.status === "shipped" ? "bg-purple-100 text-purple-700" :
+                order.status === "processing" ? "bg-blue-100 text-blue-700" :
+                "bg-yellow-100 text-yellow-700"
+              }`}>
+                {order.status}
+              </span>
+            </div>
+          ))}
         </div>
       </div>
     </div>

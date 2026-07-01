@@ -233,9 +233,12 @@ const ProductDetail = () => {
           {/* Messenger */}
           <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 mb-3 text-center">
             <p className="font-hind font-semibold text-gray-800 mb-1 text-sm">সহজেই মেসেঞ্জারে অর্ডার করুন:</p>
-            <a href="#" className="text-blue-600 underline text-xs block mb-3">Facebook Messenger</a>
-            <a href="https://www.messenger.com/" target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-[#0078FF] hover:bg-[#0066DD] text-white font-semibold py-2.5 px-6 rounded transition text-xs">
+            <a
+              href={`https://m.me/hrlifestyle1?text=${encodeURIComponent(`Hi, I'm interested in: ${product.name}`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-[#0078FF] hover:bg-[#0066DD] text-white font-semibold py-2.5 px-6 rounded transition text-xs"
+            >
               <BsMessenger size={18} /> ORDER ON MESSENGER
             </a>
           </div>
@@ -243,8 +246,12 @@ const ProductDetail = () => {
           {/* WhatsApp */}
           <div className="bg-green-50 border border-green-100 rounded-lg p-4 mb-5 text-center">
             <p className="font-hind font-semibold text-gray-800 mb-3 text-sm">সহজেই হোয়াটসঅ্যাপে অর্ডার করুন:</p>
-            <a href="https://wa.me/" target="_blank" rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#20BD5A] text-white font-semibold py-2.5 px-6 rounded transition text-xs">
+            <a
+              href={`https://wa.me/message/QUMZST6ZN2JOJ1?text=${encodeURIComponent(`Hi, I'm interested in: ${product.name}\nPrice: ৳${product.discountPrice || product.price}`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#20BD5A] text-white font-semibold py-2.5 px-6 rounded transition text-xs"
+            >
               <FaWhatsapp size={18} /> ORDER ON WHATSAPP
             </a>
           </div>

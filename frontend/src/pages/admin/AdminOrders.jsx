@@ -103,9 +103,8 @@ const AdminOrders = () => {
                       #{order._id.slice(-8).toUpperCase()}
                     </td>
                     <td className="px-6 py-4">
-                      <p className="font-medium">{order.user?.name || "N/A"}</p>
-                      <p className="text-xs text-gray-500">{order.user?.email || ""}</p>
-                      {order.user?.phone && <p className="text-xs text-gray-500">{order.user.phone}</p>}
+                      <p className="font-medium">{order.guestName || order.user?.name || "N/A"}</p>
+                      <p className="text-xs text-gray-500">{order.guestPhone || order.user?.email || ""}</p>
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-600">
                       <p>{order.shippingAddress?.street || "-"}</p>

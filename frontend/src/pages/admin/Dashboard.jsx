@@ -191,7 +191,7 @@ const Dashboard = () => {
                     <td className="py-3 text-sm">
                       #{order._id.slice(-8).toUpperCase()}
                     </td>
-                    <td className="py-3">{order.user?.name || "N/A"}</td>
+                    <td className="py-3">{order.guestName || order.user?.name || "N/A"}</td>
                     <td className="py-3 font-medium">৳{order.totalPrice}</td>
                     <td className="py-3">
                       <span
