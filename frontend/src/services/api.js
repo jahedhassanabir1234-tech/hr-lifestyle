@@ -36,11 +36,12 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    if (error.response.status === 401) {
+    if (error.response.status === 401 || error.response.status === 403) {
       const currentPath = window.location.pathname;
       if (currentPath.startsWith("/admin")) {
         localStorage.removeItem("hr-user");
-        window.location.href = "/login";
+        localStorage.removeItem("adminAuth");
+        window.location.href = "/admin/login";
       } else if (currentPath !== "/login" && currentPath !== "/register") {
         localStorage.removeItem("hr-user");
         window.location.href = "/login";

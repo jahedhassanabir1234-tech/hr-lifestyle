@@ -61,7 +61,6 @@ const Footer = () => {
                 { label: "All Products", to: "/products" },
                 { label: "Flash Sale", to: "/flash-sale" },
                 { label: "Bundle Products", to: "/bundle-products" },
-                { label: "Track Order", to: "/track-order" },
               ].map((link) => (
                 <li key={link.to}>
                   <Link

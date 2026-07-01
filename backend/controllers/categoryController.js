@@ -1,11 +1,20 @@
 const Category = require("../models/Category");
+const Product = require("../models/Product");
 
-// @desc    Get all categories
+// @desc    Get all categories (with product count)
 // @route   GET /api/categories
 const getCategories = async (req, res) => {
   try {
     const categories = await Category.find({}).sort({ name: 1 }).lean();
-    res.json(categories);
+    const categoryIds = categories.map((c) => c._id);
+    const counts = await Product.aggregate([
+      { $match: { category: { $in: categoryIds } } },
+      { $group: { _id: "$category", count: { $sum: 1 } } },
+    ]);
+    const countMap = {};
+    counts.forEach((c) => { countMap[c._id.toString()] = c.count; });
+    const result = categories.map((c) => ({ ...c, productCount: countMap[c._id.toString()] || 0 }));
+    res.json(result);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -61,13 +70,17 @@ const updateCategory = async (req, res) => {
   }
 };
 
-// @desc    Delete category (Admin)
+// @desc    Delete category (Admin) - also unlinks products from this category
 // @route   DELETE /api/categories/:id
 const deleteCategory = async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);
 
     if (category) {
+      await Product.updateMany(
+        { category: req.params.id },
+        { $unset: { category: "" } }
+      );
       await Category.findByIdAndDelete(req.params.id);
       res.json({ message: "Category removed" });
     } else {

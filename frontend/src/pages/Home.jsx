@@ -130,6 +130,8 @@ const Home = () => {
     { image: "/banners/banner1.jpg" },
     { image: "/banners/banner2.jpg" },
     { image: "/banners/banner3.jpg" },
+    { image: "/banners/banner4.jpg" },
+    { image: "/banners/banner5.jpg" },
   ];
 
   const features = [
@@ -201,12 +203,16 @@ const Home = () => {
           </div>
 
           {scrollSnaps.length > 1 && (
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 items-center">
               {scrollSnaps.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => scrollTo(index)}
-                  className={`w-2.5 h-2.5 rounded-full transition ${selectedIndex === index ? "bg-primary" : "bg-gray-300"}`}
+                  className={`rounded-full transition ${
+                    selectedIndex === index
+                      ? "w-2 h-2 bg-[#E8572A]"
+                      : "w-2 h-2 bg-gray-400"
+                  }`}
                 />
               ))}
             </div>

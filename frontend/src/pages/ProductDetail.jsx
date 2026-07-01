@@ -29,6 +29,10 @@ const ProductDetail = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [slug]);
+
+  useEffect(() => {
     const fetchProduct = async () => {
       try {
         const { data } = await api.get(`/products/${slug}`);

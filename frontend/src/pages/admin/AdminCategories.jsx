@@ -100,13 +100,17 @@ const AdminCategories = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this category?")) return;
+    const cat = categories.find((c) => c._id === id);
+    const msg = cat?.productCount
+      ? `"${cat.name}" has ${cat.productCount} product(s). They will be uncategorized. Delete anyway?`
+      : `Are you sure you want to delete "${cat?.name || "this category"}"?`;
+    if (!window.confirm(msg)) return;
     try {
       await api.delete(`/categories/${id}`);
       toast.success("Category deleted!");
       fetchCategories();
     } catch (error) {
-      toast.error("Failed to delete category");
+      toast.error(error.response?.data?.message || "Failed to delete category");
     }
   };
 
@@ -153,7 +157,10 @@ const AdminCategories = () => {
                   <span className="text-xs text-gray-400 font-poppins">{category.name}</span>
                 </div>
               </div>
-              <h3 className="text-lg font-bold mb-2">{category.name}</h3>
+              <h3 className="text-lg font-bold mb-1">{category.name}</h3>
+              <p className="text-xs text-gray-400 mb-2">
+                {category.productCount || 0} product(s)
+              </p>
               <p className="text-gray-500 text-sm mb-4">
                 {category.description || "No description"}
               </p>

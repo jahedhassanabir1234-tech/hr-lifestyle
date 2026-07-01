@@ -1,11 +1,21 @@
-import { lazy, Suspense } from "react";
-import { Routes, Route } from "react-router-dom";
+import { lazy, Suspense, useEffect } from "react";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import MobileBottomNav from "./components/MobileBottomNav";
 import ErrorBoundary from "./components/ErrorBoundary";
 import AdminRoute from "./components/AdminRoute";
 import AdminLayout from "./components/AdminLayout";
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [pathname]);
+  return null;
+}
 
 const Home = lazy(() => import("./pages/Home"));
 const Products = lazy(() => import("./pages/Products"));
@@ -26,7 +36,6 @@ const AdminProducts = lazy(() => import("./pages/admin/AdminProducts"));
 const AdminOrders = lazy(() => import("./pages/admin/AdminOrders"));
 const AdminCategories = lazy(() => import("./pages/admin/AdminCategories"));
 const AdminLogin = lazy(() => import("./pages/AdminLogin"));
-const TrackOrder = lazy(() => import("./pages/TrackOrder"));
 
 const PageLoader = () => (
   <div className="flex items-center justify-center min-h-[60vh]">
@@ -40,6 +49,7 @@ const PageLoader = () => (
 function App() {
   return (
     <ErrorBoundary>
+      <ScrollToTop />
       <Routes>
         <Route path="/admin/login" element={
           <Suspense fallback={<PageLoader />}><AdminLogin /></Suspense>
@@ -76,7 +86,6 @@ function App() {
                   <Route path="/terms-and-conditions" element={<Terms />} />
                   <Route path="/return" element={<Return />} />
                   <Route path="/exchange-request" element={<ExchangeRequest />} />
-                  <Route path="/track-order" element={<TrackOrder />} />
                 </Routes>
               </Suspense>
             </main>
