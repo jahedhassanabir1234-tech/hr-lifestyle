@@ -27,10 +27,11 @@ const createOrder = async (req, res) => {
       (acc, item) => acc + item.price * item.quantity,
       0
     );
-    const shippingPrice = itemsPrice > 1000 ? 0 : 60;
-    const taxPrice = Number((itemsPrice * 0.05).toFixed(2));
+    const city = (shippingAddress.city || "").toLowerCase();
+    const shippingPrice = city.includes("dhaka") ? 80 : 120;
+    const taxPrice = 0;
     const totalPrice = Number(
-      (itemsPrice + shippingPrice + taxPrice).toFixed(2)
+      (itemsPrice + shippingPrice).toFixed(2)
     );
 
     const order = await Order.create({
@@ -183,10 +184,11 @@ const createGuestOrder = async (req, res) => {
       (acc, item) => acc + item.price * item.quantity,
       0
     );
-    const shippingPrice = itemsPrice > 1000 ? 0 : 60;
-    const taxPrice = Number((itemsPrice * 0.05).toFixed(2));
+    const city = (shippingAddress.city || "").toLowerCase();
+    const shippingPrice = city.includes("dhaka") ? 80 : 120;
+    const taxPrice = 0;
     const totalPrice = Number(
-      (itemsPrice + shippingPrice + taxPrice).toFixed(2)
+      (itemsPrice + shippingPrice).toFixed(2)
     );
 
     const order = await Order.create({

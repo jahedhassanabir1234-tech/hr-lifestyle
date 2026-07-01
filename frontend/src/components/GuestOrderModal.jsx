@@ -80,8 +80,8 @@ const GuestOrderModal = ({ isOpen, onClose, product, quantity = 1, selectedSize 
 
   if (success) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={onClose}>
-        <div className="bg-white rounded-2xl w-full max-w-md p-8 text-center" onClick={(e) => e.stopPropagation()}>
+      <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 sm:p-4" onClick={onClose}>
+        <div className="bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-md p-8 text-center" onClick={(e) => e.stopPropagation()}>
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <FiCheck className="h-8 w-8 text-green-600" />
           </div>
@@ -107,13 +107,13 @@ const GuestOrderModal = ({ isOpen, onClose, product, quantity = 1, selectedSize 
 
   const price = product.discountPrice > 0 ? product.discountPrice : product.price;
   const subtotal = price * quantity;
-  const shipping = subtotal > 1000 ? 0 : 60;
-  const tax = subtotal * 0.05;
-  const total = subtotal + shipping + tax;
+  const isDhaka = formData.city.toLowerCase().includes("dhaka");
+  const shipping = isDhaka ? 80 : 120;
+  const total = subtotal + shipping;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={onClose}>
-      <div className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 sm:p-4" onClick={onClose}>
+      <div className="bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-lg max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-gray-100">
           <h2 className="text-lg font-bold text-gray-800 font-poppins">Complete Your Order</h2>
@@ -189,7 +189,7 @@ const GuestOrderModal = ({ isOpen, onClose, product, quantity = 1, selectedSize 
             />
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             <div>
               <label className="block text-xs font-medium text-gray-500 mb-1 font-poppins">City *</label>
               <input
@@ -214,7 +214,7 @@ const GuestOrderModal = ({ isOpen, onClose, product, quantity = 1, selectedSize 
                 required
               />
             </div>
-            <div>
+            <div className="col-span-2 sm:col-span-1">
               <label className="block text-xs font-medium text-gray-500 mb-1 font-poppins">Zip</label>
               <input
                 type="text"
@@ -247,12 +247,10 @@ const GuestOrderModal = ({ isOpen, onClose, product, quantity = 1, selectedSize 
               <span className="font-medium">৳{subtotal.toLocaleString()}</span>
             </div>
             <div className="flex justify-between text-sm font-poppins">
-              <span className="text-gray-500">Shipping</span>
-              <span className="font-medium text-green-600">{shipping === 0 ? "Free" : `৳${shipping}`}</span>
-            </div>
-            <div className="flex justify-between text-sm font-poppins">
-              <span className="text-gray-500">Tax (5%)</span>
-              <span className="font-medium">৳{tax.toFixed(2)}</span>
+              <span className="text-gray-500">Delivery</span>
+              <span className="font-medium text-green-600">
+                {formData.city ? (isDhaka ? "Dhaka" : "Outside Dhaka") + ` - ৳${shipping}` : "৳80 - ৳120"}
+              </span>
             </div>
             <div className="border-t border-gray-200 pt-2 flex justify-between font-poppins">
               <span className="font-bold">Total</span>

@@ -108,27 +108,18 @@ const Cart = () => {
               <span className="font-medium font-poppins">&#2547;{cart.totalPrice}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600 font-poppins">Shipping</span>
-              <span className="font-medium font-poppins">
-                {cart.totalPrice > 1000 ? "Free" : "&#2547;60"}
-              </span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600 font-poppins">Tax (5%)</span>
-              <span className="font-medium font-poppins">
-                &#2547;{(cart.totalPrice * 0.05).toFixed(2)}
+              <span className="text-gray-600 font-poppins">Delivery</span>
+              <span className="text-xs font-medium font-poppins text-gray-500">
+                ৳80 (Dhaka) / ৳120 (Outside)
               </span>
             </div>
             <div className="border-t pt-3 flex justify-between">
-              <span className="text-lg font-bold font-poppins">Total</span>
+              <span className="text-lg font-bold font-poppins">Subtotal</span>
               <span className="text-lg font-bold text-red-500 font-poppins">
-                &#2547;{(
-                  cart.totalPrice +
-                  (cart.totalPrice > 1000 ? 0 : 60) +
-                  cart.totalPrice * 0.05
-                ).toFixed(2)}
+                &#2547;{cart.totalPrice}
               </span>
             </div>
+            <p className="text-xs text-gray-400 font-poppins">Delivery charge will be added at checkout</p>
           </div>
           <Link to="/checkout" className="btn-primary block text-center font-poppins">
             Proceed to Checkout

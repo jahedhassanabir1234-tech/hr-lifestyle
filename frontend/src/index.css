@@ -69,14 +69,12 @@ img {
   display: block;
 }
 
-/* Lazy load images */
+/* Lazy load images - fade in on load */
 img[loading="lazy"] {
-  opacity: 0;
   transition: opacity 0.3s ease;
 }
 
-img[loading="lazy"].loaded,
-img[loading="lazy"]:not([src=""]) {
+img.loaded {
   opacity: 1;
 }
 
@@ -252,5 +250,42 @@ img[loading="lazy"]:not([src=""]) {
       rgba(0, 0, 0, 0.02) 10px,
       rgba(0, 0, 0, 0.02) 20px
     );
+  }
+}
+
+/* Mobile touch improvements */
+@media (max-width: 640px) {
+  html {
+    font-size: 15px;
+  }
+
+  /* Prevent zoom on input focus on iOS */
+  input[type="text"],
+  input[type="tel"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="search"],
+  input[type="url"],
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+
+  /* Better tap targets */
+  button, a, [role="button"] {
+    min-height: 44px;
+  }
+
+  /* Smooth scroll for mobile */
+  .embla__slide {
+    touch-action: pan-y;
+  }
+}
+
+/* Safe area for notch phones */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
   }
 }
