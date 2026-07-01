@@ -92,7 +92,7 @@ const Checkout = () => {
   };
 
   const subtotal = cart?.totalPrice || 0;
-  const isDhaka = (shippingAddress.city || "").toLowerCase().includes("dhaka");
+  const isDhaka = (shippingAddress.state || "").toLowerCase().includes("dhaka");
   const shipping = isDhaka ? 80 : 120;
   const total = subtotal + shipping;
 
@@ -149,18 +149,14 @@ const Checkout = () => {
                     <label className="block text-xs font-medium text-gray-500 mb-1 font-poppins">Full Address *</label>
                     <input type="text" name="street" value={shippingAddress.street} onChange={handleChange} placeholder="House #, Road #, Area, Thana" className="w-full px-4 py-2.5 rounded-lg bg-white border border-gray-200 text-sm focus:outline-none focus:border-[#E8572A] focus:ring-1 focus:ring-[#E8572A] font-poppins" required />
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <label className="block text-xs font-medium text-gray-500 mb-1 font-poppins">City *</label>
-                      <input type="text" name="city" value={shippingAddress.city} onChange={handleChange} placeholder="Dhaka" className="w-full px-4 py-2.5 rounded-lg bg-white border border-gray-200 text-sm focus:outline-none focus:border-[#E8572A] focus:ring-1 focus:ring-[#E8572A] font-poppins" required />
+                      <input type="text" name="city" value={shippingAddress.city} onChange={handleChange} placeholder="Mirpur" className="w-full px-4 py-2.5 rounded-lg bg-white border border-gray-200 text-sm focus:outline-none focus:border-[#E8572A] focus:ring-1 focus:ring-[#E8572A] font-poppins" required />
                     </div>
                     <div>
                       <label className="block text-xs font-medium text-gray-500 mb-1 font-poppins">District *</label>
                       <input type="text" name="state" value={shippingAddress.state} onChange={handleChange} placeholder="Dhaka" className="w-full px-4 py-2.5 rounded-lg bg-white border border-gray-200 text-sm focus:outline-none focus:border-[#E8572A] focus:ring-1 focus:ring-[#E8572A] font-poppins" required />
-                    </div>
-                    <div className="col-span-2 sm:col-span-1">
-                      <label className="block text-xs font-medium text-gray-500 mb-1 font-poppins">Zip Code</label>
-                      <input type="text" name="zipCode" value={shippingAddress.zipCode} onChange={handleChange} placeholder="1000" className="w-full px-4 py-2.5 rounded-lg bg-white border border-gray-200 text-sm focus:outline-none focus:border-[#E8572A] focus:ring-1 focus:ring-[#E8572A] font-poppins" />
                     </div>
                   </div>
                 </div>

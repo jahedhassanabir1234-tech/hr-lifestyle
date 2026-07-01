@@ -100,31 +100,18 @@ const Footer = () => {
               <li className="flex items-start gap-3">
                 <HiLocationMarker className="h-5 w-5 text-primary mt-0.5 shrink-0" />
                 <span className="text-sm text-gray-400 font-poppins">
-                  Dhaka, Bangladesh
+                  Mirpur Shopping Center Level 5 Shop No 578 (Lift-4)
                 </span>
               </li>
               <li className="flex items-center gap-3">
                 <HiPhone className="h-5 w-5 text-primary shrink-0" />
-                <span className="text-sm text-gray-400 font-poppins">+880 1XXXXXXXXX</span>
+                <span className="text-sm text-gray-400 font-poppins">01300773455</span>
               </li>
               <li className="flex items-center gap-3">
                 <HiMail className="h-5 w-5 text-primary shrink-0" />
-                <span className="text-sm text-gray-400 font-poppins">info@hrlifestyle.com</span>
+                <span className="text-sm text-gray-400 font-poppins">Hrlifestylehrshopping@gmail.com</span>
               </li>
             </ul>
-            <div className="mt-5">
-              <h5 className="text-sm font-medium text-white mb-2 font-poppins">Payment Methods</h5>
-              <div className="flex gap-2 flex-wrap">
-                {["bKash", "Nagad", "Visa", "Master"].map((method) => (
-                  <span
-                    key={method}
-                    className="bg-white/10 text-gray-400 text-xs px-3 py-1.5 rounded-lg font-poppins"
-                  >
-                    {method}
-                  </span>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       </div>

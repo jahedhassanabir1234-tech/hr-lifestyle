@@ -27,8 +27,8 @@ const createOrder = async (req, res) => {
       (acc, item) => acc + item.price * item.quantity,
       0
     );
-    const city = (shippingAddress.city || "").toLowerCase();
-    const shippingPrice = city.includes("dhaka") ? 80 : 120;
+    const district = (shippingAddress.state || "").toLowerCase();
+    const shippingPrice = district.includes("dhaka") ? 80 : 120;
     const taxPrice = 0;
     const totalPrice = Number(
       (itemsPrice + shippingPrice).toFixed(2)
@@ -184,8 +184,8 @@ const createGuestOrder = async (req, res) => {
       (acc, item) => acc + item.price * item.quantity,
       0
     );
-    const city = (shippingAddress.city || "").toLowerCase();
-    const shippingPrice = city.includes("dhaka") ? 80 : 120;
+    const district = (shippingAddress.state || "").toLowerCase();
+    const shippingPrice = district.includes("dhaka") ? 80 : 120;
     const taxPrice = 0;
     const totalPrice = Number(
       (itemsPrice + shippingPrice).toFixed(2)

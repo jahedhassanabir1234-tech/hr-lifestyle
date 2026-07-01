@@ -14,7 +14,6 @@ const GuestOrderModal = ({ isOpen, onClose, product, quantity = 1, selectedSize 
     street: "",
     city: "",
     state: "",
-    zipCode: "",
     couponCode: "",
   });
 
@@ -48,7 +47,6 @@ const GuestOrderModal = ({ isOpen, onClose, product, quantity = 1, selectedSize 
         street: formData.street,
         city: formData.city,
         state: formData.state,
-        zipCode: formData.zipCode || "1000",
         country: "Bangladesh",
       };
 
@@ -92,7 +90,7 @@ const GuestOrderModal = ({ isOpen, onClose, product, quantity = 1, selectedSize 
           <button
             onClick={() => {
               setSuccess(false);
-              setFormData({ name: "", phone: "", street: "", city: "", state: "", zipCode: "", couponCode: "" });
+              setFormData({ name: "", phone: "", street: "", city: "", state: "", couponCode: "" });
               onClose();
               navigate("/");
             }}
@@ -107,7 +105,7 @@ const GuestOrderModal = ({ isOpen, onClose, product, quantity = 1, selectedSize 
 
   const price = product.discountPrice > 0 ? product.discountPrice : product.price;
   const subtotal = price * quantity;
-  const isDhaka = formData.city.toLowerCase().includes("dhaka");
+  const isDhaka = formData.state.toLowerCase().includes("dhaka");
   const shipping = isDhaka ? 80 : 120;
   const total = subtotal + shipping;
 
@@ -189,7 +187,7 @@ const GuestOrderModal = ({ isOpen, onClose, product, quantity = 1, selectedSize 
             />
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-medium text-gray-500 mb-1 font-poppins">City *</label>
               <input
@@ -197,7 +195,7 @@ const GuestOrderModal = ({ isOpen, onClose, product, quantity = 1, selectedSize 
                 name="city"
                 value={formData.city}
                 onChange={handleChange}
-                placeholder="Dhaka"
+                placeholder="Mirpur"
                 className="w-full px-4 py-2.5 rounded-lg bg-white border border-gray-200 text-sm focus:outline-none focus:border-[#E8572A] focus:ring-1 focus:ring-[#E8572A] font-poppins"
                 required
               />
@@ -212,17 +210,6 @@ const GuestOrderModal = ({ isOpen, onClose, product, quantity = 1, selectedSize 
                 placeholder="Dhaka"
                 className="w-full px-4 py-2.5 rounded-lg bg-white border border-gray-200 text-sm focus:outline-none focus:border-[#E8572A] focus:ring-1 focus:ring-[#E8572A] font-poppins"
                 required
-              />
-            </div>
-            <div className="col-span-2 sm:col-span-1">
-              <label className="block text-xs font-medium text-gray-500 mb-1 font-poppins">Zip</label>
-              <input
-                type="text"
-                name="zipCode"
-                value={formData.zipCode}
-                onChange={handleChange}
-                placeholder="1000"
-                className="w-full px-4 py-2.5 rounded-lg bg-white border border-gray-200 text-sm focus:outline-none focus:border-[#E8572A] focus:ring-1 focus:ring-[#E8572A] font-poppins"
               />
             </div>
           </div>
@@ -249,7 +236,7 @@ const GuestOrderModal = ({ isOpen, onClose, product, quantity = 1, selectedSize 
             <div className="flex justify-between text-sm font-poppins">
               <span className="text-gray-500">Delivery</span>
               <span className="font-medium text-green-600">
-                {formData.city ? (isDhaka ? "Dhaka" : "Outside Dhaka") + ` - ৳${shipping}` : "৳80 - ৳120"}
+                {formData.state ? (isDhaka ? "Dhaka" : "Outside Dhaka") + ` - ৳${shipping}` : "৳80 - ৳120"}
               </span>
             </div>
             <div className="border-t border-gray-200 pt-2 flex justify-between font-poppins">
