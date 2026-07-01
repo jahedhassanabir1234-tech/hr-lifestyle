@@ -193,6 +193,12 @@ const Navbar = () => {
               {cat.name}
             </Link>
           ))}
+          <Link
+            to="/track-order"
+            className="underline-animate md:px-3 italic px-1 md:py-2 py-1"
+          >
+            TRACK ORDER
+          </Link>
           {user?.role === "admin" && (
             <Link
               to="/admin"
@@ -226,6 +232,9 @@ const Navbar = () => {
             </Link>
             <Link to="/products" className="block px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg font-medium font-poppins" onClick={() => setMobileMenu(false)}>
               All Products
+            </Link>
+            <Link to="/track-order" className="block px-4 py-3 text-[#E8572A] hover:bg-orange-50 rounded-lg font-medium font-poppins" onClick={() => setMobileMenu(false)}>
+              Track Order
             </Link>
             {categories.map((cat) => (
               <Link

@@ -9,10 +9,12 @@ const {
   updateOrderStatus,
   getAllOrders,
   getStats,
+  trackOrdersByPhone,
 } = require("../controllers/orderController");
 
 router.get("/stats", protect, admin, getStats);
 router.get("/myorders", protect, getMyOrders);
+router.get("/track/:phone", trackOrdersByPhone);
 router.get("/", protect, admin, getAllOrders);
 router.post("/", protect, createOrder);
 router.post("/guest", createGuestOrder);

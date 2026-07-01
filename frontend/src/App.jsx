@@ -26,6 +26,7 @@ const AdminProducts = lazy(() => import("./pages/admin/AdminProducts"));
 const AdminOrders = lazy(() => import("./pages/admin/AdminOrders"));
 const AdminCategories = lazy(() => import("./pages/admin/AdminCategories"));
 const AdminLogin = lazy(() => import("./pages/AdminLogin"));
+const TrackOrder = lazy(() => import("./pages/TrackOrder"));
 
 const PageLoader = () => (
   <div className="flex items-center justify-center min-h-[60vh]">
@@ -75,6 +76,7 @@ function App() {
                   <Route path="/terms-and-conditions" element={<Terms />} />
                   <Route path="/return" element={<Return />} />
                   <Route path="/exchange-request" element={<ExchangeRequest />} />
+                  <Route path="/track-order" element={<TrackOrder />} />
                 </Routes>
               </Suspense>
             </main>

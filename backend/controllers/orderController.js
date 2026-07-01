@@ -117,6 +117,29 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
+// @desc    Track orders by phone number (public)
+// @route   GET /api/orders/track/:phone
+const trackOrdersByPhone = async (req, res) => {
+  try {
+    const { phone } = req.params;
+
+    if (!phone) {
+      return res.status(400).json({ message: "Phone number is required" });
+    }
+
+    const orders = await Order.find({
+      guestPhone: phone,
+    })
+      .select("items totalPrice status guestName guestPhone shippingAddress createdAt")
+      .sort({ createdAt: -1 })
+      .lean();
+
+    res.json(orders);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // @desc    Get all orders (Admin)
 // @route   GET /api/orders
 const getAllOrders = async (req, res) => {
@@ -219,4 +242,5 @@ module.exports = {
   updateOrderStatus,
   getAllOrders,
   getStats,
+  trackOrdersByPhone,
 };
