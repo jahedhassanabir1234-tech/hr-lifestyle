@@ -57,6 +57,7 @@ app.use("/api/products/top-selling", cacheMiddleware(120));
 app.use("/api/products/special", cacheMiddleware(120));
 
 app.use("/api/auth", require("./routes/authRoutes"));
+app.use("/api/admin", require("./routes/adminRoutes"));
 app.use("/api/products", require("./routes/productRoutes"));
 app.use("/api/categories", require("./routes/categoryRoutes"));
 app.use("/api/orders", require("./routes/orderRoutes"));

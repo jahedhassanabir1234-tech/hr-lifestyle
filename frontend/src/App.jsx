@@ -25,6 +25,7 @@ const AdminDashboard = lazy(() => import("./pages/admin/Dashboard"));
 const AdminProducts = lazy(() => import("./pages/admin/AdminProducts"));
 const AdminOrders = lazy(() => import("./pages/admin/AdminOrders"));
 const AdminCategories = lazy(() => import("./pages/admin/AdminCategories"));
+const AdminLogin = lazy(() => import("./pages/AdminLogin"));
 
 const PageLoader = () => (
   <div className="flex items-center justify-center min-h-[60vh]">
@@ -39,6 +40,10 @@ function App() {
   return (
     <ErrorBoundary>
       <Routes>
+        <Route path="/admin/login" element={
+          <Suspense fallback={<PageLoader />}><AdminLogin /></Suspense>
+        } />
+
         <Route path="/admin" element={
           <AdminRoute>
             <AdminLayout />

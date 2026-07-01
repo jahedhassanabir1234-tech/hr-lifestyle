@@ -9,6 +9,7 @@ import {
   FaInstagram,
   FaYoutube,
   FaWhatsapp,
+  FaTiktok,
 } from "react-icons/fa";
 import Logo from "./Logo";
 
@@ -28,16 +29,19 @@ const Footer = () => {
               Your premium destination for fashion, electronics, and lifestyle
               products. Quality guaranteed.
             </p>
-            <div className="flex gap-3">
+            <div className="flex gap-3 flex-wrap">
               {[
-                { icon: FaFacebookF, color: "hover:bg-blue-600" },
-                { icon: FaInstagram, color: "hover:bg-pink-600" },
-                { icon: FaYoutube, color: "hover:bg-red-600" },
-                { icon: FaWhatsapp, color: "hover:bg-green-600" },
-              ].map(({ icon: Icon, color }, i) => (
+                { icon: FaFacebookF, color: "hover:bg-blue-600", href: "https://www.facebook.com/share/184BWCkSRk/" },
+                { icon: FaInstagram, color: "hover:bg-pink-600", href: "https://www.instagram.com/hr_life_styl?igsh=MWZ2M2p3anVmNHk3eA==" },
+                { icon: FaTiktok, color: "hover:bg-black", href: "https://www.tiktok.com/@mdhridoykhanz?_r=1&_t=ZS-97fckCFm4R6" },
+                { icon: FaWhatsapp, color: "hover:bg-green-600", href: "https://wa.me/message/QUMZST6ZN2JOJ1" },
+                { icon: FaYoutube, color: "hover:bg-red-600", href: "https://youtube.com/@hrlifestyl?si=5T53gxuxr4w6DR_Y" },
+              ].map(({ icon: Icon, color, href }, i) => (
                 <a
                   key={i}
-                  href="#"
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className={`w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center text-gray-400 hover:text-white ${color} transition`}
                 >
                   <Icon className="h-4 w-4" />

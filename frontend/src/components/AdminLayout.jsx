@@ -1,4 +1,4 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
   HiHome,
   HiShoppingBag,
@@ -6,11 +6,13 @@ import {
   HiCog,
   HiMenu,
   HiX,
+  HiLogout,
 } from "react-icons/hi";
 import { useState } from "react";
 
 const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const navigate = useNavigate();
 
   const links = [
     { to: "/admin", icon: <HiHome className="h-5 w-5" />, label: "Dashboard", end: true },
@@ -62,7 +64,18 @@ const AdminLayout = () => {
             </NavLink>
           ))}
         </nav>
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t">
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t space-y-1">
+          <button
+            onClick={() => {
+              localStorage.removeItem("adminAuth");
+              localStorage.removeItem("hr-user");
+              navigate("/admin/login");
+            }}
+            className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-red-500 hover:bg-red-50 transition w-full"
+          >
+            <HiLogout className="h-5 w-5" />
+            Logout
+          </button>
           <NavLink
             to="/"
             className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition"
